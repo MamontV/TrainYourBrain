@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.trainyourbrain">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/mainicon"
+        android:label="Train your brain"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Colours"></activity>
+        <activity android:name=".Matrix"></activity>
+        <activity android:name=".Planes"></activity>
+        <activity android:name=".SchulteTable"></activity>
+        <activity android:name=".MatrixInfo"></activity>
+        <activity android:name=".PlanesInfo"></activity>
+        <activity android:name=".TableInfo"></activity>
+        <activity android:name=".ColoursInfo"></activity>
+        <activity android:name=".MatrixRules"></activity>
+        <activity android:name=".PlanesRules"></activity>
+        <activity android:name=".TableRules"></activity>
+        <activity android:name=".ColoursRules"></activity>
+    </application>
+</manifest>
