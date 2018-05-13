@@ -28,4 +28,33 @@
         android:orientation="horizontal"
         android:gravity="center">
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/four"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/five"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/six"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/seven"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+    </LinearLayout>
 </LinearLayout>

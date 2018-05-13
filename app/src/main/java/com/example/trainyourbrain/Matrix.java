@@ -13,35 +13,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.trainyourbrain.R;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class Matrix extends AppCompatActivity {
     int number = 3;
-    ArrayList<Button> buttonList, buttonList2;
-    LinearLayout one, two, three, four, main;
+    int id;
+    int buttonCount = 9;
+    ArrayList<Button> buttonList;
+    LinearLayout one, two, three, four, main, five, six, seven;
     int mistake = 0;
-    int time = 0;
     AlertDialog.Builder ad;
     int points = 0;
-    int id;
     int method = 1;
     String message2;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.matrix_one);
+        buttonList = new ArrayList<>();
         main = (LinearLayout) findViewById(R.id.mainview);
-        main.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (time == 0) {
-                    createBoard();
-                    time++;
-                }
-            }
-        });
+        createBoard();
         ad = new AlertDialog.Builder(this);
         ad.setPositiveButton(R.string.game, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
@@ -89,17 +80,28 @@ public class Matrix extends AppCompatActivity {
     }
 
     public void createBoard() {
-        buttonList = new ArrayList<>();
+        if (mistake == 3) {
+            message2 = String.valueOf("Очки: " + points + " Рекорд: ");
+            ad.setMessage(message2);
+            ad.show();
+        }
+        setContentView(R.layout.matrix);
+        buttonList.clear();
         one = (LinearLayout) findViewById(R.id.one);
         two = (LinearLayout) findViewById(R.id.two);
         three = (LinearLayout) findViewById(R.id.three);
-        id = 1;
+        four = (LinearLayout) findViewById(R.id.four);
+        five = (LinearLayout) findViewById(R.id.five);
+        six = (LinearLayout) findViewById(R.id.six);
+        seven = (LinearLayout) findViewById(R.id.seven);
+        id = 0;
         //Создание кнопок
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < buttonCount; i++) {
             final Button b = new Button(this);
             b.setGravity(Gravity.CENTER_HORIZONTAL);
             b.setId(generateUniqueId());
-            if (id < 5)
+            b.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
+            if (b.getId() < number)
                 b.setBackgroundResource(R.drawable.backb);
             else
                 b.setBackgroundResource(R.drawable.back);
@@ -110,133 +112,370 @@ public class Matrix extends AppCompatActivity {
             });
             buttonList.add(b);
         }
-
         Collections.shuffle(buttonList);
-        //Вывод на экран
-        for (int i = 0; i < 9; i++) {
-            if (i < 3) {
-                one.addView(buttonList.get(i));
-            }
-            else if (i > 2 && i < 6) {
-                two.addView(buttonList.get(i));
-            }
-            else {
-                three.addView(buttonList.get(i));
-            }
-        }
-        new CountDownTimer(3000, 1000) {
-            public void onTick(long millisUntilFinished) {
-            }
-            public void onFinish() {
-                makeWhite();
-            }
-        }
-                .start();
-    }
-
-    public void createNextBoard() {
-        setContentView(R.layout.matrix_two);
-        buttonList2 = new ArrayList<>();
-        one = (LinearLayout) findViewById(R.id.one);
-        two = (LinearLayout) findViewById(R.id.two);
-        three = (LinearLayout) findViewById(R.id.three);
-        four = (LinearLayout) findViewById(R.id.four);
-        id = 1;
-        method = 2;
-        number = 4;
-        //Создание кнопок
-        for (int i = 0; i < 12; i++) {
-            final Button b = new Button(this);
-            b.setGravity(Gravity.CENTER_HORIZONTAL);
-            b.setId(generateUniqueId());
-            if (id < 6)
-                b.setBackgroundResource(R.drawable.backb);
-            else
-                b.setBackgroundResource(R.drawable.back);
-            b.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    OnClick(b);
+        if (method == 1) {
+            //Вывод на экран
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 3) {
+                    one.addView(buttonList.get(i));
                 }
-            });
-            buttonList2.add(b);
+                else if (i > 2 && i < 6) {
+                    two.addView(buttonList.get(i));
+                }
+                else {
+                    three.addView(buttonList.get(i));
+                }
+            }
         }
-
-        Collections.shuffle(buttonList2);
-        //Вывод на экран
-        for (int i = 0; i < 12; i++) {
-            if (i < 3) {
-                one.addView(buttonList2.get(i));
-            } else if (i > 2 && i < 6) {
-                two.addView(buttonList2.get(i));
-            } else if (i > 5 && i < 9) {
-                three.addView(buttonList2.get(i));
-            } else {
-                four.addView(buttonList2.get(i));
+        else if (method == 2) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 3) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 2 && i < 6) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 5 && i < 9) {
+                    three.addView(buttonList.get(i));
+                } else {
+                    four.addView(buttonList.get(i));
+                }
+            }
+        }
+        else if (method == 3) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 4) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 3 && i < 8) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 7 && i < 12) {
+                    three.addView(buttonList.get(i));
+                } else {
+                    four.addView(buttonList.get(i));
+                }
+            }
+        }
+        else if (method == 4) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 5) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 4 && i < 10) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 9 && i < 15) {
+                    three.addView(buttonList.get(i));
+                } else {
+                    four.addView(buttonList.get(i));
+                }
+            }
+        }
+        else if (method == 5) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 5) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 4 && i < 10) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 9 && i < 15) {
+                    three.addView(buttonList.get(i));
+                } else if (i > 14 && i < 20){
+                    four.addView(buttonList.get(i));
+                } else {
+                    five.addView(buttonList.get(i));
+                }
+            }
+        }
+        else if (method == 6) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 6) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 5 && i < 12) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 11 && i < 18) {
+                    three.addView(buttonList.get(i));
+                } else if (i > 17 && i < 24){
+                    four.addView(buttonList.get(i));
+                } else {
+                    five.addView(buttonList.get(i));
+                }
+            }
+        }
+        else if (method == 7) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 6) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 5 && i < 12) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 11 && i < 18) {
+                    three.addView(buttonList.get(i));
+                } else if (i > 17 && i < 24){
+                    four.addView(buttonList.get(i));
+                } else if (i > 23 && i < 30){
+                    five.addView(buttonList.get(i));
+                } else {
+                    six.addView(buttonList.get(i));
+                }
+            }
+        }
+        else if (method == 8) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 7) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 6 && i < 14) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 13 && i < 21) {
+                    three.addView(buttonList.get(i));
+                } else if (i > 20 && i < 28){
+                    four.addView(buttonList.get(i));
+                } else if (i > 27 && i < 35){
+                    five.addView(buttonList.get(i));
+                } else {
+                    six.addView(buttonList.get(i));
+                }
+            }
+        }
+        else if (method == 9) {
+            for (int i = 0; i < buttonCount; i++) {
+                if (i < 7) {
+                    one.addView(buttonList.get(i));
+                } else if (i > 6 && i < 14) {
+                    two.addView(buttonList.get(i));
+                } else if (i > 13 && i < 21) {
+                    three.addView(buttonList.get(i));
+                } else if (i > 20 && i < 28){
+                    four.addView(buttonList.get(i));
+                } else if (i > 27 && i < 35){
+                    five.addView(buttonList.get(i));
+                } else if (i > 34 && i < 42){
+                    six.addView(buttonList.get(i));
+                } else {
+                    seven.addView(buttonList.get(i));
+                }
             }
         }
         new CountDownTimer(3000, 1000) {
-            public void onTick(long millisUntilFinished) {
-            }
-
+            public void onTick(long millisUntilFinished) {}
             public void onFinish() {
-                for (int i = 0; i < 12; i++) {
-                    if (buttonList2.get(i).getId() < 6) {
-                        buttonList2.get(i).setBackgroundResource(R.drawable.back);
+                for (int i = 0; i < buttonCount; i++) {
+                    if (buttonList.get(i).getId() < number) {
+                        buttonList.get(i).setBackgroundResource(R.drawable.back);
                     }
                 }
             }
         }
                 .start();
     }
+
     public void OnClick(Button b) {
         if (method == 1) {
             switch (b.getId()) {
-                case 1:
-                case 2:
-                case 3:
+                case 0: case 1: case 2:
                     number--;
                     points++;
                     b.setBackgroundResource(R.drawable.backb);
                     if (number == 0) {
                         showYes(main);
-                        createNextBoard();
+                        method = 2;
+                        buttonCount = 12;
+                        number = 4;
+                        createBoard();
                     }
                     break;
                 default:
                     mistake++;
                     showNo(main);
-                    createNextBoard();
-                    if (mistake == 3) {
-                        message2 = String.valueOf("Очки: " + points + " Рекорд: ");
-                        ad.setMessage(message2);
-                        ad.show();
-                    }
+                    method = 2;
+                    buttonCount = 12;
+                    number = 4;
+                    createBoard();
                     break;
             }
         }
         else if (method == 2) {
             switch (b.getId()) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
+                case 0: case 1: case 2: case 3:
                     number--;
                     points++;
                     b.setBackgroundResource(R.drawable.backb);
                     if (number == 0) {
                         showYes(main);
-                        createNextBoard();
+                        buttonCount = 16;
+                        number = 5;
+                        method = 3;
+                        createBoard();
                     }
                     break;
                 default:
                     mistake++;
                     showNo(main);
-                    createNextBoard();
-                    if (mistake == 3) {
-                        message2 = String.valueOf("Очки: " + points + " Рекорд: ");
-                        ad.setMessage(message2);
-                        ad.show();
+                    buttonCount = 16;
+                    number = 5;
+                    method = 3;
+                    createBoard();
+                    break;
+            }
+        }
+        else if (method == 3) {
+            switch (b.getId()) {
+                case 1: case 2: case 3: case 4: case 0:
+                    number--;
+                    points++;
+                    b.setBackgroundResource(R.drawable.backb);
+                    if (number == 0) {
+                        showYes(main);
+                        buttonCount = 20;
+                        number = 6;
+                        method = 4;
+                        createBoard();
                     }
+                    break;
+                default:
+                    mistake++;
+                    showNo(main);
+                    buttonCount = 20;
+                    number = 6;
+                    method = 4;
+                    createBoard();
+                    break;
+            }
+        }
+        else if (method == 4) {
+            switch (b.getId()) {
+                case 0: case 1: case 2: case 3: case 4: case 5:
+                    number--;
+                    points++;
+                    b.setBackgroundResource(R.drawable.backb);
+                    if (number == 0) {
+                        showYes(main);
+                        buttonCount = 25;
+                        number = 7;
+                        method = 5;
+                        createBoard();
+                    }
+                    break;
+                default:
+                    mistake++;
+                    showNo(main);
+                    buttonCount = 25;
+                    number = 7;
+                    method = 5;
+                    createBoard();
+                    break;
+            }
+        }
+        else if (method == 5) {
+            switch (b.getId()) {
+                case 1: case 2: case 3: case 4: case 5: case 6: case 0:
+                    number--;
+                    points++;
+                    b.setBackgroundResource(R.drawable.backb);
+                    if (number == 0) {
+                        showYes(main);
+                        buttonCount = 30;
+                        number = 8;
+                        method = 6;
+                        createBoard();
+                    }
+                    break;
+                default:
+                    mistake++;
+                    showNo(main);
+                    buttonCount = 30;
+                    number = 8;
+                    method = 6;
+                    createBoard();
+                    break;
+            }
+        }
+        else if (method == 6) {
+            switch (b.getId()) {
+                case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 0:
+                    number--;
+                    points++;
+                    b.setBackgroundResource(R.drawable.backb);
+                    if (number == 0) {
+                        showYes(main);
+                        buttonCount = 36;
+                        number = 9;
+                        method = 7;
+                        createBoard();
+                    }
+                    break;
+                default:
+                    mistake++;
+                    showNo(main);
+                    buttonCount = 36;
+                    number = 9;
+                    method = 7;
+                    createBoard();
+                    break;
+            }
+        }
+        else if (method == 7) {
+            switch (b.getId()) {
+                case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 0:
+                    number--;
+                    points++;
+                    b.setBackgroundResource(R.drawable.backb);
+                    if (number == 0) {
+                        showYes(main);
+                        buttonCount = 42;
+                        number = 10;
+                        method = 8;
+                        createBoard();
+                    }
+                    break;
+                default:
+                    mistake++;
+                    showNo(main);
+                    buttonCount = 42;
+                    number = 10;
+                    method = 8;
+                    createBoard();
+                    break;
+            }
+        }
+        else if (method == 8) {
+            switch (b.getId()) {
+                case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 0:
+                    number--;
+                    points++;
+                    b.setBackgroundResource(R.drawable.backb);
+                    if (number == 0) {
+                        showYes(main);
+                        buttonCount = 49;
+                        number = 11;
+                        method = 9;
+                        createBoard();
+                    }
+                    break;
+                default:
+                    mistake++;
+                    showNo(main);
+                    buttonCount = 49;
+                    number = 11;
+                    method = 9;
+                    createBoard();
+                    break;
+            }
+        }
+        else if (method == 9) {
+            switch (b.getId()) {
+                case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 0:
+                    number--;
+                    points++;
+                    b.setBackgroundResource(R.drawable.backb);
+                    if (number == 0) {
+                        showYes(main);
+                        buttonCount = 49;
+                        number = 11;
+                        method = 9;
+                        createBoard();
+                    }
+                    break;
+                default:
+                    mistake++;
+                    showNo(main);
+                    buttonCount = 49;
+                    number = 11;
+                    method = 9;
+                    createBoard();
                     break;
             }
         }
@@ -248,18 +487,5 @@ public class Matrix extends AppCompatActivity {
             v = findViewById(++id);
         }
         return id++;
-    }
-    public void makeWhite() {
-        for (int i = 0; i < 9; i++) {
-            if (buttonList.get(i).getId() == 1) {
-                buttonList.get(i).setBackgroundResource(R.drawable.back);
-            }
-            else if (buttonList.get(i).getId() == 2) {
-                buttonList.get(i).setBackgroundResource(R.drawable.back);
-            }
-            else if (buttonList.get(i).getId() == 3) {
-                buttonList.get(i).setBackgroundResource(R.drawable.back);
-            }
-        }
     }
 }
