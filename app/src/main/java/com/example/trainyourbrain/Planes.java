@@ -2,13 +2,13 @@ package com.example.trainyourbrain;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,23 +20,23 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Planes extends Activity implements View.OnTouchListener {
+public class Planes extends Activity {
 
     ImageView one, two, three;
     LinearLayout f;
     Animation anim, anim2, anim3;
     ArrayList<Float> arr;
-    int mistake, id, points, rec;
+    int mistake, id, points, record;
     Button left, right;
     AlertDialog.Builder ad;
-    String message2;
-    SharedPreferences mSharedPref;
-    final String SAVED_TEXT = "saved_text";
+    String message;
+    SharedPreferences pref;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.planes);
 
+        pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         f = (LinearLayout) findViewById(R.id.fr);
         one = (ImageView) findViewById(R.id.image1);
         two = (ImageView) findViewById(R.id.image2);
@@ -48,7 +48,6 @@ public class Planes extends Activity implements View.OnTouchListener {
         two.setVisibility(View.INVISIBLE);
         three.setVisibility(View.INVISIBLE);
 
-        f.setOnTouchListener(this);
         left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 dealWithButtonClick(left);
@@ -64,20 +63,45 @@ public class Planes extends Activity implements View.OnTouchListener {
         arr.add((float) 180);
         mistake = 0;
         id = 0;
-    }
 
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                choice();
-                f.setEnabled(false);
-                break;
+        ad = new AlertDialog.Builder(this);
+        ad.setPositiveButton(R.string.game, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                points = 0;
+                mistake = 0;
+            }
+        });
+        ad.setNegativeButton(R.string.menu, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int arg1) {
+                Intent intent = new Intent(Planes.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        ad.setCancelable(false);
+        choice();
+    }
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("Planes", record);
+        editor.apply();
+    }
+    protected void onResume() {
+        super.onResume();
+        if (pref.contains("Planes")) {
+            record = pref.getInt("Planes", 0);
         }
-        return true;
     }
 
     public void choice() {
-        if (mistake < 3) {
+        if (mistake == 3) {
+            if (points > record) {
+                record = points;
+            }
+            message = String.valueOf(R.string.points + points + R.string.rec + record);
+            ad.setMessage(message);
+            ad.show();
+        }
             int rand = 1 + (int) (Math.random() * 4);
             if (rand == 1)
                 redright();
@@ -87,32 +111,7 @@ public class Planes extends Activity implements View.OnTouchListener {
                 greenright();
             else if (rand == 4)
                 greenleft();
-        } else {
-            if (points > rec) {
-                rec = points;
-            }
-            mSharedPref = getPreferences(MODE_PRIVATE);
-            String savedRec = mSharedPref.getString(SAVED_TEXT, "");
-            message2 = String.valueOf("Очки: " + points + " Рекорд: " + savedRec);
-            ad = new AlertDialog.Builder(this);
-            ad.setMessage(message2);
-            ad.setPositiveButton(R.string.game, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int arg1) {
-                    points = 0;
-                    mistake = 0;
-                    choice();
-                }
-            });
-            ad.setNegativeButton(R.string.menu, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int arg1) {
-                    Intent intent = new Intent(Planes.this, MainActivity.class);
-                    startActivity(intent);
-                }
-            });
-            ad.setCancelable(false);
-            ad.show();
         }
-    }
 
     public void redright() {
         id = 1;
@@ -130,7 +129,6 @@ public class Planes extends Activity implements View.OnTouchListener {
         three.startAnimation(anim2);
         two.startAnimation(anim3);
     }
-
     public void redleft() {
         id = 2;
         one.setImageResource(R.drawable.redplane);
@@ -147,7 +145,6 @@ public class Planes extends Activity implements View.OnTouchListener {
         three.startAnimation(anim2);
         two.startAnimation(anim3);
     }
-
     public void greenright() {
         id = 3;
         one.setImageResource(R.drawable.greenplane);
@@ -164,7 +161,6 @@ public class Planes extends Activity implements View.OnTouchListener {
         three.startAnimation(anim2);
         two.startAnimation(anim3);
     }
-
     public void greenleft() {
         id = 4;
         one.setImageResource(R.drawable.greenplane);
@@ -197,7 +193,6 @@ public class Planes extends Activity implements View.OnTouchListener {
             }
         }, 500);
     }
-
     public void showNo(View view) {
         final Toast toast = new Toast(this);
         ImageView no2 = new ImageView(this);
@@ -242,7 +237,6 @@ public class Planes extends Activity implements View.OnTouchListener {
                 }
         }
     }
-
     public void dealWithButtonClick2(Button right) {
         switch (id) {
             case 1:

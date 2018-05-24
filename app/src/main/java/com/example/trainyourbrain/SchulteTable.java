@@ -2,7 +2,12 @@ package com.example.trainyourbrain;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -21,15 +26,18 @@ public class SchulteTable extends Activity {
     int colour = 1;
     AlertDialog.Builder ad;
     private Chronometer mChronometer;
-    long rec = 1000;
+    long record = 1000;
     ArrayList buttonList;
     LinearLayout one, two, three, four;
     TextView myname;
+    String message;
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.table);
+        pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         buttonList = new ArrayList<>();
         one = (LinearLayout) findViewById(R.id.one);
         two = (LinearLayout) findViewById(R.id.two);
@@ -40,6 +48,18 @@ public class SchulteTable extends Activity {
         mChronometer.setBase(SystemClock.elapsedRealtime());
         mChronometer.start();
         myname = (TextView) findViewById(R.id.myname);
+    }
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putLong("SchulteTable", record);
+        editor.apply();
+    }
+    protected void onResume() {
+        super.onResume();
+        if (pref.contains("SchulteTable")) {
+            record = pref.getLong("SchulteTable", 0);
+        }
     }
 
     public void dealWithButtonClick(Button b) {
@@ -200,21 +220,11 @@ public class SchulteTable extends Activity {
                         mChronometer.stop();
                         long elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase();
                         long time = elapsedMillis / 1000;
-                        if (rec > time) {
-                            rec = time;
+                        if (record > time) {
+                            record = time;
                         }
-                        ad = new AlertDialog.Builder(this);
-                        ad.setMessage("Время: " + time + " Рекорд: " + rec);
-                        ad.setPositiveButton(R.string.game, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int arg1) {
-                                mChronometer.setBase(SystemClock.elapsedRealtime());
-                            }
-                        });
-                        ad.setNegativeButton(R.string.menu, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int arg1) {
-
-                            }
-                        });
+                        message = String.valueOf(R.string.time + time + R.string.rec + record);
+                        ad.setMessage(message);
                         ad.show();
                         break;
                 }

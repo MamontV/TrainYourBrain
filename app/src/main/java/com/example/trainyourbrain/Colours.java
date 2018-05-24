@@ -2,8 +2,10 @@ package com.example.trainyourbrain;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -22,12 +24,14 @@ import java.util.Collections;
 public class Colours extends Activity {
     TextView color;
     Button yes, no;
-    int mistake, rec, points;
+    int mistake, record, points;
     ArrayList<String> stringarr = new ArrayList<>();
     ArrayList<Integer> colorarr = new ArrayList<>();
     AlertDialog.Builder ad;
     LinearLayout l;
     CountDownTimer timer;
+    String message;
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class Colours extends Activity {
                 dealWithButtonClick2(no);
             }
         });
+        pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
 
         stringarr.add("Красный");
         stringarr.add("Желтый");
@@ -63,8 +68,6 @@ public class Colours extends Activity {
 
 
         ad = new AlertDialog.Builder(this);
-        String message2 = "Очки: " + points + " Рекорд: " + rec;
-        ad.setMessage(message2);
         ad.setPositiveButton(R.string.game, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
                 points = 0;
@@ -75,19 +78,29 @@ public class Colours extends Activity {
         ad.setNegativeButton(R.string.menu, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
                 Intent intent = new Intent(Colours.this, MainActivity.class);
+                startActivity(intent);
             }
         });
         ad.setCancelable(false);
         createTimer();
     }
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("Colours", record);
+        editor.apply();
+    }
+    protected void onResume() {
+        super.onResume();
+        if (pref.contains("Colours")) {
+            record = pref.getInt("Colours", 0);
+        }
+    }
+
     public void createTimer() {
         timer = new CountDownTimer(3000, 1000) {
-            public void onTick(long millisUntilFinished) {
-
-            }
+            public void onTick(long millisUntilFinished) {}
             public void onFinish() {
-                showNo(l);
-                mistake++;
                 changeString(stringarr, colorarr);
             }
         }
@@ -127,9 +140,11 @@ public class Colours extends Activity {
 
     public void changeString(ArrayList stringarr, ArrayList colorarr) {
         if (mistake == 3) {
-            if (points > rec) {
-                rec = points;
+            if (points > record) {
+                record = points;
             }
+            message = String.valueOf(R.string.points + points + R.string.rec + record);
+            ad.setMessage(message);
             ad.show();
         } else {
             int i = 0 + (int) (Math.random() * 5);

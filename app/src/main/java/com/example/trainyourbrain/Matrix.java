@@ -1,11 +1,14 @@
 package com.example.trainyourbrain;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -16,21 +19,22 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Matrix extends AppCompatActivity {
+public class Matrix extends Activity {
     int number = 3;
-    int id;
+    int id, record;
     int buttonCount = 9;
     ArrayList<Button> buttonList;
     LinearLayout one, two, three, four, main, five, six, seven;
-    int mistake = 0;
+    int mistake, points;
     AlertDialog.Builder ad;
-    int points = 0;
     int method = 1;
-    String message2;
+    String message;
+    SharedPreferences pref;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         buttonList = new ArrayList<>();
+        pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         main = (LinearLayout) findViewById(R.id.mainview);
         createBoard();
         ad = new AlertDialog.Builder(this);
@@ -38,14 +42,31 @@ public class Matrix extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int arg1) {
                 points = 0;
                 mistake = 0;
+                number = 3;
+                method = 1;
+                buttonCount = 9;
                 createBoard();
             }
         });
         ad.setNegativeButton(R.string.menu, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int arg1) {
+                Intent intent = new Intent(Matrix.this, MainActivity.class);
+                startActivity(intent);
             }
         });
         ad.setCancelable(false);
+    }
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("Matrix", record);
+        editor.apply();
+    }
+    protected void onResume() {
+        super.onResume();
+        if (pref.contains("Matrix")) {
+            record = pref.getInt("Matrix", 0);
+        }
     }
 
     public void showYes(View view) {
@@ -81,8 +102,11 @@ public class Matrix extends AppCompatActivity {
 
     public void createBoard() {
         if (mistake == 3) {
-            message2 = String.valueOf("Очки: " + points + " Рекорд: ");
-            ad.setMessage(message2);
+            if (points > record) {
+                record = points;
+            }
+            message = String.valueOf(getString(R.string.points) + " " + points + getString(R.string.rec) + " " + record);
+            ad.setMessage(message);
             ad.show();
         }
         setContentView(R.layout.matrix);
@@ -118,16 +142,13 @@ public class Matrix extends AppCompatActivity {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 3) {
                     one.addView(buttonList.get(i));
-                }
-                else if (i > 2 && i < 6) {
+                } else if (i > 2 && i < 6) {
                     two.addView(buttonList.get(i));
-                }
-                else {
+                } else {
                     three.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 2) {
+        } else if (method == 2) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 3) {
                     one.addView(buttonList.get(i));
@@ -139,8 +160,7 @@ public class Matrix extends AppCompatActivity {
                     four.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 3) {
+        } else if (method == 3) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 4) {
                     one.addView(buttonList.get(i));
@@ -152,8 +172,7 @@ public class Matrix extends AppCompatActivity {
                     four.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 4) {
+        } else if (method == 4) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 5) {
                     one.addView(buttonList.get(i));
@@ -165,8 +184,7 @@ public class Matrix extends AppCompatActivity {
                     four.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 5) {
+        } else if (method == 5) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 5) {
                     one.addView(buttonList.get(i));
@@ -174,14 +192,13 @@ public class Matrix extends AppCompatActivity {
                     two.addView(buttonList.get(i));
                 } else if (i > 9 && i < 15) {
                     three.addView(buttonList.get(i));
-                } else if (i > 14 && i < 20){
+                } else if (i > 14 && i < 20) {
                     four.addView(buttonList.get(i));
                 } else {
                     five.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 6) {
+        } else if (method == 6) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 6) {
                     one.addView(buttonList.get(i));
@@ -189,14 +206,13 @@ public class Matrix extends AppCompatActivity {
                     two.addView(buttonList.get(i));
                 } else if (i > 11 && i < 18) {
                     three.addView(buttonList.get(i));
-                } else if (i > 17 && i < 24){
+                } else if (i > 17 && i < 24) {
                     four.addView(buttonList.get(i));
                 } else {
                     five.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 7) {
+        } else if (method == 7) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 6) {
                     one.addView(buttonList.get(i));
@@ -204,16 +220,15 @@ public class Matrix extends AppCompatActivity {
                     two.addView(buttonList.get(i));
                 } else if (i > 11 && i < 18) {
                     three.addView(buttonList.get(i));
-                } else if (i > 17 && i < 24){
+                } else if (i > 17 && i < 24) {
                     four.addView(buttonList.get(i));
-                } else if (i > 23 && i < 30){
+                } else if (i > 23 && i < 30) {
                     five.addView(buttonList.get(i));
                 } else {
                     six.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 8) {
+        } else if (method == 8) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 7) {
                     one.addView(buttonList.get(i));
@@ -221,16 +236,15 @@ public class Matrix extends AppCompatActivity {
                     two.addView(buttonList.get(i));
                 } else if (i > 13 && i < 21) {
                     three.addView(buttonList.get(i));
-                } else if (i > 20 && i < 28){
+                } else if (i > 20 && i < 28) {
                     four.addView(buttonList.get(i));
-                } else if (i > 27 && i < 35){
+                } else if (i > 27 && i < 35) {
                     five.addView(buttonList.get(i));
                 } else {
                     six.addView(buttonList.get(i));
                 }
             }
-        }
-        else if (method == 9) {
+        } else if (method == 9) {
             for (int i = 0; i < buttonCount; i++) {
                 if (i < 7) {
                     one.addView(buttonList.get(i));
@@ -238,11 +252,11 @@ public class Matrix extends AppCompatActivity {
                     two.addView(buttonList.get(i));
                 } else if (i > 13 && i < 21) {
                     three.addView(buttonList.get(i));
-                } else if (i > 20 && i < 28){
+                } else if (i > 20 && i < 28) {
                     four.addView(buttonList.get(i));
-                } else if (i > 27 && i < 35){
+                } else if (i > 27 && i < 35) {
                     five.addView(buttonList.get(i));
-                } else if (i > 34 && i < 42){
+                } else if (i > 34 && i < 42) {
                     six.addView(buttonList.get(i));
                 } else {
                     seven.addView(buttonList.get(i));
@@ -250,7 +264,9 @@ public class Matrix extends AppCompatActivity {
             }
         }
         new CountDownTimer(3000, 1000) {
-            public void onTick(long millisUntilFinished) {}
+            public void onTick(long millisUntilFinished) {
+            }
+
             public void onFinish() {
                 for (int i = 0; i < buttonCount; i++) {
                     if (buttonList.get(i).getId() < number) {

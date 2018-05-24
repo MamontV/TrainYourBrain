@@ -1,14 +1,9 @@
 <resources>
-    <string name="app_name">Game</string>
-    <string name="message">Время, рекорд</string>
+    <string name="app_name">Train your brain</string>
+    <string name="time">Время: </string>
     <string name="menu">Меню</string>
-    <string name="game">Играть еще раз</string>
-    <string name="messagef">
-        Очки:
-    </string>
-    <string name="messages">
-        Рекорд:
-    </string>
-    <string name="mistakes">Ошибки: </string>
-    <string name="point">Очки: </string>
+    <string name="game">Играть</string>
+    <string name="rec">\nРекорд: </string>
+    <string name="mistakes">\nОшибки: </string>
+    <string name="points">Очки: </string>
 </resources>
