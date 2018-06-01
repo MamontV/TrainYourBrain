@@ -28,5 +28,6 @@
         <activity android:name=".PlanesRules"></activity>
         <activity android:name=".TableRules"></activity>
         <activity android:name=".ColoursRules"></activity>
+        <activity android:name=".About"></activity>
     </application>
 </manifest>
